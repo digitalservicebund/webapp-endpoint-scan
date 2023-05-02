@@ -1,0 +1,4 @@
+#Ignore results ...
+results/*
+#Except keep.me placeholder
+!results/keep.me

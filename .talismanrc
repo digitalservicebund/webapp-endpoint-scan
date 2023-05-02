@@ -1,0 +1,10 @@
+fileignoreconfig:
+- filename: README.md
+  checksum: 12f8ecac7df8bd73263864d7df5892db3cadc581ca143ca7153d05dfa9f2de07
+- filename: run.sh
+  checksum: f178646581dce064f4392ebd40df73e6f6c1e06f7af5e28abc848b9d474bffa3
+- filename: tests/dsbund_secure_headers_test_suite.yml
+  checksum: 872d960bb970ac10d8efdaf16865f421a150b56402d76c1c61c1c5d1a011107c
+- filename: tests/owasp_secure_headers_test_suite.yml
+  checksum: a174cbd5e4ca1032fb3c5668a30950386b1314cd8cbd8d4d7b2a133f2b1ad37e
+version: "1.0"

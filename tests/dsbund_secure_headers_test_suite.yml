@@ -1,0 +1,81 @@
+name: HTTP security response headers test suites
+##############################################################################
+# Customized the original OWASP test suite to adhere to the rules defined by 
+# https://securityheaders.com/
+# 
+# Source of OWASP test suite:
+# https://github.com/oshp/oshp-validator/blob/main/tests_suite.yml
+##############################################################################
+vars:
+  target_site: ''
+  logout_url: ''
+  internet_facing: false
+  request_timeout_in_seconds: 20
+testcases:
+  - name: Strict-Transport-Security
+    steps:
+      - type: http
+        method: GET
+        url: '{{.target_site}}'
+        skip_body: true
+        timeout: '{{.request_timeout_in_seconds}}'
+        assertions:
+          - result.statuscode ShouldEqual 200
+          - result.headers.strict-transport-security ShouldNotBeNil
+          - result.headers.strict-transport-security ShouldEqual "max-age=15724800; includeSubDomains" #max-age is half a year so even better than OWASP with one year
+  - name: X-Frame-Options
+    steps:
+      - type: http
+        method: GET
+        url: '{{.target_site}}'
+        skip_body: true
+        timeout: '{{.request_timeout_in_seconds}}'
+        assertions:
+          - result.statuscode ShouldEqual 200
+          - result.headers.x-frame-options ShouldNotBeNil
+          - result.headers.x-frame-options ShouldBeIn "deny" "DENY"
+  - name: X-Content-Type-Options
+    steps:
+      - type: http
+        method: GET
+        url: '{{.target_site}}'
+        skip_body: true
+        timeout: '{{.request_timeout_in_seconds}}'
+        assertions:
+          - result.statuscode ShouldEqual 200
+          - result.headers.x-content-type-options ShouldNotBeNil
+          - result.headers.x-content-type-options ShouldEqual "nosniff"
+  - name: Content-Security-Policy
+    steps:
+      - type: http
+        method: GET
+        url: '{{.target_site}}'
+        skip_body: true
+        timeout: '{{.request_timeout_in_seconds}}'
+        assertions:
+          - result.statuscode ShouldEqual 200
+          - result.headers.content-security-policy ShouldNotBeNil
+          - result.headers.content-security-policy ShouldNotContainSubstring "unsafe"
+  - name: Referrer-Policy
+    steps:
+      - type: http
+        method: GET
+        url: '{{.target_site}}'
+        skip_body: true
+        timeout: '{{.request_timeout_in_seconds}}'
+        assertions:
+          - result.statuscode ShouldEqual 200
+          - result.headers.referrer-policy ShouldNotBeNil
+          - result.headers.referrer-policy ShouldEqual "no-referrer"
+  - name: Permissions-Policy
+    steps:
+      - type: http
+        method: GET
+        url: '{{.target_site}}'
+        skip_body: true
+        timeout: '{{.request_timeout_in_seconds}}'
+        assertions:
+          - result.statuscode ShouldEqual 200
+          - result.headers.permissions-policy ShouldNotBeNil
+          - result.headers.permissions-policy ShouldEqual "accelerometer=(),ambient-light-sensor=(),autoplay=(),battery=(),camera=(),display-capture=(),document-domain=(),encrypted-media=(),fullscreen=(),gamepad=(),geolocation=(),gyroscope=(),layout-animations=(self),legacy-image-formats=(self),magnetometer=(),microphone=(),midi=(),oversized-images=(self),payment=(),picture-in-picture=(),publickey-credentials-get=(),speaker-selection=(),sync-xhr=(self),unoptimized-images=(self),unsized-media=(self),usb=(),screen-wake-lock=(),web-share=(),xr-spatial-tracking=()"
+
