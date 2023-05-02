@@ -3,7 +3,7 @@
 check_tool_ok='OK'
 check_param_ok='OK'
 
-ssh_headers_test_suite='dsbund_secure_headers_test_suite.yml'
+ssh_headers_test_suite='dsbund_secure_*_test_suite.yml'
 # ssh_headers_test_suite='owasp_secure_headers_test_suite.yml'
 
 check_tool() {
@@ -36,27 +36,29 @@ main() {
   check_tool 'sslyze'
 
   param_hostname="${1}"
+  param_cookie_path="${2}"
   check_parameters "${param_hostname}"
 
   if test "#${check_tool_ok}#" = "#OK#" -a "#${check_param_ok}#" = "#OK#"
   then
-    run_checks "${param_hostname}"
+    run_checks "${param_hostname}" "${param_cookie_path}"
   
   elif test "#${check_param_ok}#" = "#NOK#"
   then
-    printf 'Usage: run.sh <hostname>\n'
+    printf 'Usage: run.sh <hostname> [<cookie_path>]\n'
   
   elif test "#${check_tool_ok}#" = "#NOK#"
   then
     printf 'Scan tools missing in path! Please see README.md, install and retry.\n'
   
   else
-    printf 'Unexpected error. Usage: run.sh <hostname>\n'
+    printf 'Unexpected error. Usage: run.sh <hostname> [<cookie_path>]\n'
   fi
 }
 
 run_checks() {
   param_hostname="${1}"
+  param_cookie_path="${2}"
 
   printf '# Running TLS settings check ...\n'
   mkdir -p ./results/${param_hostname}
@@ -68,6 +70,7 @@ run_checks() {
     --mount type=bind,source=$(pwd)/results,target=/workdir/results \
     -u $(id -u):$(id -g) \
     -e "VENOM_VAR_target_site=https://${param_hostname}" \
+    -e "VENOM_VAR_cookie_path=\"${param_cookie_path}\"" \
     -e "VENOM_OUTPUT_DIR=/workdir/results/${param_hostname}" \
     ovhcom/venom:latest \
     run "/workdir/tests/${ssh_headers_test_suite}"

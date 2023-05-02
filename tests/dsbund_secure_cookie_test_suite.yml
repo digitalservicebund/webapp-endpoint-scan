@@ -1,0 +1,33 @@
+name: HTTP secure cookie test suite
+##############################################################################
+# Heavily inspired by https://github.com/ovh/venom/issues/499
+# 
+# Use variable "cookie_path" to specify cookie providing path.
+#
+# There seem to be also implementation inconsistencies in case sensitivity
+# regarding the "Secure" and "HttpOnly" flags.
+# Examples:
+# - https://bugs.openjdk.org/browse/JDK-8179393)
+# - https://github.com/modxcms/revolution/issues/13921
+#
+##############################################################################
+vars:
+  target_site: ''
+  cookie_path: ''
+  logout_url: ''
+  internet_facing: false
+  request_timeout_in_seconds: 20
+testcases:
+  - name: Secure Cookie
+    skip:
+      - cookie_path ShouldNotBeEmpty
+    steps:
+      - type: http
+        method: GET
+        url: '{{.target_site}}{{.cookie_path}}'
+        skip_body: true
+        timeout: '{{.request_timeout_in_seconds}}'
+        assertions:
+          - result.statuscode ShouldEqual 200
+          - result.headers.set-cookie ShouldContainSubstring Secure
+          - result.headers.set-cookie ShouldContainSubstring HttpOnly

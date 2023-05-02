@@ -11,6 +11,14 @@ A collection of scans to ensure that we use state of the art settings for:
 
 Call `run.sh <hostname>` to run baseline checks. Find results in `results/<hostname>` directory.
 
+### Check cookie flags
+
+Find more information on `Secure` and `HttpOnly` on 
+[Mozilla's MDN Web Docs](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie#secure).
+
+If you want to check secure cookie settings call `run.sh <hostname> <cookie-path>` where `<cookie-path>` defines
+the absolute path where `Set-Cookie` headers are provided. Example: `run.sh www.example.org /set/cookie/path`
+
 ## Tools used
 
 ### sslyze - analyze TLS (a.k.a. SSL) configuration compliance with Mozilla profiles
