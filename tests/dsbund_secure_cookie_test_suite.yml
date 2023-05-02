@@ -31,3 +31,4 @@ testcases:
           - result.statuscode ShouldEqual 200
           - result.headers.set-cookie ShouldContainSubstring Secure
           - result.headers.set-cookie ShouldContainSubstring HttpOnly
+          - result.headers.set-cookie ShouldContainSubstring SameSite
